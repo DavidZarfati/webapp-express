@@ -25,11 +25,13 @@ function show(req, res) {
     }
     // Recupera il post e i tag associati tramite JOIN
     const sql = `
-        SELECT p.*, t.id AS tag_id, t.name AS tag_name
-        FROM posts p
-        LEFT JOIN post_tags pt ON p.id = pt.post_id
-        LEFT JOIN tags t ON pt.tag_id = t.id
-        WHERE p.id = ?
+        SELECT *
+        FROM posts
+        LEFT JOIN post_tag ON posts.id = post_tag.post_id
+        LEFT JOIN tags ON post_tag.tag_id = tags.id
+        WHERE posts.id = ?
+
+        // USING
     `;
     connection.query(sql, [id], (err, results) => {
         if (err) {
@@ -48,7 +50,7 @@ function show(req, res) {
             title: results[0].title,
             content: results[0].content,
             path: results[0].path,
-            tags: results[0].tag_id ? results.map(r => ({ id: r.tag_id, name: r.tag_name })) : []
+            tags: results[0].tag_id ? results.map(r => ({ id: r.tag_id, name: r.label })) : []
         };
         res.json(post);
     });
