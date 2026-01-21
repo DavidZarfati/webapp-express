@@ -2,9 +2,15 @@ import express from "express"
 import filmRouter from "./routers/films.js"
 import notFound from "./middlewares/notFound.js"
 import errorsHandler from "./middlewares/errorsHandler.js"
+import cors from "cors"
 
 const app = express()
 const port = 3000
+
+app.use(cors({
+    origin: "http://localhost:5173"
+}))
+
 
 // app.use(express.static("public"))
 app.use(express.json())
