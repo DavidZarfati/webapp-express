@@ -2,7 +2,7 @@ import connection from "../database/db.js";
 
 function index(req, res) {
     const tag = req.query.tag;
-    let sql = "SELECT * FROM posts";
+    let sql = "SELECT * FROM movies";
     let params = []
     connection.query(sql, params, (err, results) => {
         if (err) {
@@ -26,12 +26,11 @@ function show(req, res) {
     // Recupera il post e i tag associati tramite JOIN
     const sql = `
         SELECT *
-        FROM posts
-        LEFT JOIN post_tag ON posts.id = post_tag.post_id
-        LEFT JOIN tags ON post_tag.tag_id = tags.id
-        WHERE posts.id = ?
+        FROM movies
+        JOIN reviews 
+        WHERE movies.id = ?
 
-        // USING
+        
     `;
     connection.query(sql, [id], (err, results) => {
         if (err) {
