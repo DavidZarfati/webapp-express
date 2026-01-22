@@ -1,4 +1,5 @@
 import connection from "../database/db.js";
+import db from "../database/db.js";
 
 function index(req, res) {
     const tag = req.query.tag;
@@ -56,4 +57,22 @@ function show(req, res) {
 
 
 
-export { index, show };
+
+function storeReview(req, res, next) {
+    const movieId = req.params.id;
+    const { name, vote, text } = req.body;
+    if (!name || !vote || !text) {
+        return res.status(400).json({ error: "Tutti i campi sono obbligatori" });
+    }
+    const sql = "INSERT INTO reviews (movie_id, name, vote, text) VALUES (?, ?, ?, ?)";
+    db.query(sql, [movieId, name, vote, text], (err, result) => {
+        if (err) return next(err);
+        res.status(201).json({ message: "Review aggiunta con successo", reviewId: result.insertId });
+    });
+}
+
+
+
+
+
+export { index, show, storeReview };

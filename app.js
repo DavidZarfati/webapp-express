@@ -10,10 +10,10 @@ const port = 3000
 app.use(cors({
     origin: process.env.FRONTEND_URL_ORIGIN
 }))
+app.use(express.static("public"))
 
-
-// app.use(express.static("public"))
 app.use(express.json())
+
 app.get("/", (req, resp) => {
     console.log("Rotta /");
     resp.send("test")
