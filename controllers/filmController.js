@@ -25,13 +25,12 @@ function show(req, res) {
     }
     // Recupera il film e i tag associati tramite JOIN
     const sql = `
-        SELECT *
-        FROM movies
-        JOIN reviews 
-        WHERE movies.id = ?
-
-        
-    `;
+            SELECT movies.id, movies.title, movies.abstract,
+                   reviews.id AS review_id, reviews.name, reviews.vote, reviews.text
+            FROM movies
+            LEFT JOIN reviews ON movies.id = reviews.movie_id
+            WHERE movies.id = ?
+        `;
     connection.query(sql, [id], (err, results) => {
         if (err) {
             return res.status(500).json({ errore: "Errore nel recupero del film", details: err });
@@ -43,13 +42,13 @@ function show(req, res) {
                 descrizione: "Nessun film trovato con l'id fornito."
             });
         }
-        // Ricostruisce il film con i tag
+        // Ricostruisce il film con le review
         const film = {
             id: results[0].id,
             title: results[0].title,
             content: results[0].content,
             path: results[0].path,
-            tags: results[0].tag_id ? results.map(r => ({ id: r.tag_id, name: r.label })) : []
+            reviews: results.length > 0 ? results.map(r => ({ id: r.review_id, reviewer: r.name, rating: r.vote, comment: r.text })) : []
         };
         res.json(film);
     });
