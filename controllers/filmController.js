@@ -26,7 +26,7 @@ function show(req, res) {
     }
     // Recupera il film e i tag associati tramite JOIN
     const sql = `
-            SELECT movies.id, movies.title, movies.abstract,
+            SELECT movies.id, movies.title, movies.abstract, movies.image,
                    reviews.id AS review_id, reviews.name, reviews.vote, reviews.text
             FROM movies
             LEFT JOIN reviews ON movies.id = reviews.movie_id
@@ -47,8 +47,8 @@ function show(req, res) {
         const film = {
             id: results[0].id,
             title: results[0].title,
-            content: results[0].content,
-            path: results[0].path,
+            abstract: results[0].abstract,
+            image: results[0].image,
             reviews: results.length > 0 ? results.map(r => ({ id: r.review_id, reviewer: r.name, rating: r.vote, comment: r.text })) : []
         };
         res.json(film);
